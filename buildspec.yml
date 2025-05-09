@@ -22,7 +22,7 @@ phases:
       - echo Artifacts collected in artifacts/
       - echo "$SSH_KEY" | base64 -d > ec2-key.pem
       - chmod 400 ec2-key.pem
-      - scp -o StrictHostKeyChecking=no -i ec2-key.pem artifacts/* $SSH_USER@13.201.224.1:/deploy-path/
+      - scp -o StrictHostKeyChecking=no -i ec2-key.pem artifacts/ $SSH_USER@13.201.224.1:/deploy-path/
 
 artifacts:
    base-directory: artifacts
