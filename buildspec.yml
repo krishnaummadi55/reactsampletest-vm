@@ -20,7 +20,8 @@ phases:
       - if [ -d build ]; then cp -r build/* artifacts/; fi
       - if [ -d dist ]; then cp -r dist/* artifacts/; fi
       - echo Artifacts collected in artifacts/
-      - aws s3 cp artifacts s3://$S3_BUCKET_NAME/ --recursive
+      - echo "$SSH_KEY" | base64 -d > ec2-key.pem
+      - scp -o StrictHostKeyChecking=no -i ec2-key.pem artifacts/* $SSH_USER@13.201.224.1:/deploy-path/
 
 artifacts:
    base-directory: artifacts
