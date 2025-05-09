@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+  pre_build:
+    commands:
+      - echo "Jenkins pipeline = $PIPELINE_NAME"
+      - echo Installing dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm run build || echo "Build failed or no build script defined"
+  post_build:
+    commands:
+      - echo Post build phase...
+      - mkdir artifacts
+      - if [ -d build ]; then cp -r build/* artifacts/; fi
+      - if [ -d dist ]; then cp -r dist/* artifacts/; fi
+      - echo Artifacts collected in artifacts/
+      - aws s3 cp artifacts s3://$S3_BUCKET_NAME/ --recursive
+
+artifacts:
+   base-directory: artifacts
+   files:
+     - '**/*'
+   name: $PIPELINE_NAME-$CODEBUILD_BUILD_NUMBER
